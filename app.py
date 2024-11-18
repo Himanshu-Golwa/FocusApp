@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 from flask import Flask, request, jsonify
 from flask_restful import Api, Resource
 from flask_sqlalchemy import SQLAlchemy
@@ -11,15 +11,6 @@ from extensions import db, bcrypt, login_manager
 from user_auth import user_bp  # User authentication blueprint
 
 # Initialize Flask app
-=======
-from flask import Flask, request
-from flask_restful import Api, Resource
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate  # Import Flask-Migrate
-from flask_cors import CORS
-from datetime import datetime
-
->>>>>>> 163b6ac67d88389331f680b83a13007757bd502c
 app = Flask(__name__)
 api = Api(app)
 CORS(app)
@@ -27,32 +18,26 @@ CORS(app)
 # Configure SQLite database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tasks.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-<<<<<<< HEAD
 app.config['SECRET_KEY'] = 'your-secret-key'  # Required for Flask-Login
 
 # Initialize extensions
 db.init_app(app)
 bcrypt.init_app(app)
 login_manager.init_app(app)
-=======
+
 
 # Initialize the database
 db = SQLAlchemy(app)
->>>>>>> 163b6ac67d88389331f680b83a13007757bd502c
 
 # Initialize Flask-Migrate
 migrate = Migrate(app, db)
-
-<<<<<<< HEAD
 # Register blueprints
 app.register_blueprint(user_bp, url_prefix='/auth')
 
 # ---------------------
 # Database Models
 # ---------------------
-=======
 # Database model for tasks
->>>>>>> 163b6ac67d88389331f680b83a13007757bd502c
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), nullable=False)
@@ -60,12 +45,9 @@ class Task(db.Model):
     timer_status = db.Column(db.String(20), default="stopped")  # running, paused, stopped
     elapsed_time = db.Column(db.Integer, default=0)  # Time in seconds
     start_time = db.Column(db.DateTime, nullable=True)  # Time when the timer started
-<<<<<<< HEAD
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     user = relationship("User", backref="tasks")
-=======
->>>>>>> 163b6ac67d88389331f680b83a13007757bd502c
 
     def to_dict(self):
         return {
@@ -74,7 +56,6 @@ class Task(db.Model):
             "description": self.description,
             "timer_status": self.timer_status,
             "elapsed_time": self.elapsed_time,
-<<<<<<< HEAD
             "start_time": self.start_time.isoformat() if self.start_time else None,
             "user_id": self.user_id
         }
@@ -116,7 +97,6 @@ class StartTimer(Resource):
     @login_required
     def post(self):
         # Start timer logic for a specific task
-=======
             "start_time": self.start_time.isoformat() if self.start_time else None
         }
 
@@ -142,20 +122,15 @@ class TaskList(Resource):
 class StartTimer(Resource):
     def post(self):
         # Start timer logic
->>>>>>> 163b6ac67d88389331f680b83a13007757bd502c
         data = request.get_json()
         task_id = data.get("task_id")
         work_duration = data.get("work_duration", 25 * 60)  # Default: 25 minutes
-
-<<<<<<< HEAD
         task = Task.query.filter_by(id=task_id, user_id=current_user.id).first()
         if not task:
             return {"error": "Task not found or you don't have access to it"}, 404
-=======
         task = Task.query.get(task_id)
         if not task:
             return {"error": "Task not found"}, 404
->>>>>>> 163b6ac67d88389331f680b83a13007757bd502c
 
         # Start the timer
         task.timer_status = "running"
@@ -164,17 +139,13 @@ class StartTimer(Resource):
 
         return {"message": f"Timer started for task {task_id} for {work_duration // 60} minutes", "task": task.to_dict()}, 200
 
-<<<<<<< HEAD
     @login_required
-=======
->>>>>>> 163b6ac67d88389331f680b83a13007757bd502c
     def put(self):
         # Manage timer state: pause, resume, stop
         data = request.get_json()
         task_id = data.get("task_id")
         action = data.get("action")  # "pause", "resume", "stop"
 
-<<<<<<< HEAD
         task = Task.query.filter_by(id=task_id, user_id=current_user.id).first()
         if not task:
             return {"error": "Task not found or you don't have access to it"}, 404
@@ -217,7 +188,6 @@ class StartTimer(Resource):
             return {"error": str(e)}, 500
         finally:
             db.session.close()
-=======
         task = Task.query.get(task_id)
         if not task:
             return {"error": "Task not found"}, 404
@@ -255,13 +225,10 @@ class StartTimer(Resource):
         db.session.commit()
         return {"message": f"Timer {action}d for task {task_id}", "task": task.to_dict()}, 200
 
->>>>>>> 163b6ac67d88389331f680b83a13007757bd502c
-
 # Add resources to the API
 api.add_resource(TaskList, "/tasks")
 api.add_resource(StartTimer, "/start_timer")
 
-<<<<<<< HEAD
 
 @app.teardown_appcontext
 def shutdown_session(exception=None):
@@ -270,8 +237,6 @@ def shutdown_session(exception=None):
 # ---------------------
 # App Entry Point
 # ---------------------
-=======
->>>>>>> 163b6ac67d88389331f680b83a13007757bd502c
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()  # Ensures tables are created for the first time
