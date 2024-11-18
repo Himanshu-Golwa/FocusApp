@@ -1,0 +1,22 @@
+# Exclude the virtual environment
+venv/
+
+# Python cache files
+*.pyc
+__pycache__/
+
+# Environment variables
+.env
+
+# SQLite database
+*.db
+
+# Migrations (optional)
+migrations/
+
+# Flask instance folder
+instance/
+
+# IDE-specific files
+*.vscode/
+.idea/
